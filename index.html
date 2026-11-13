@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Used Car Buyer's Toolkit</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a18;
+  --paper: #f7f4ee;
+  --warm: #f2ede4;
+  --rule: #d4c9b0;
+  --gold: #b8860b;
+  --gold-light: #d4a017;
+  --red: #8b1a1a;
+  --green: #1a4a2e;
+  --blue: #1a2e4a;
+  --slate: #4a4a40;
+  --muted: #7a7060;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+@media print {
+  header, .tab-bar, #tab-guide, #tab-calc, #tab-models,
+  .checklist-header, .progress-label, .progress-bar-wrap { display: none !important; }
+  #tab-checklist { display: block !important; }
+  body { background: white !important; }
+  .cl-section-title { color: #111 !important; border-bottom: 2px solid #999 !important; }
+  .checklist-item { padding: 5px 2px !important; border-bottom: 1px solid #eee !important; }
+  .checklist-item:hover { background: none !important; }
+  .checklist-item input[type=checkbox] { display: none !important; }
+  .checklist-item label::before {
+    content: '☐ ';
+    font-size: 14px;
+  }
+  .checklist-item.checked label::before { content: '☑ '; }
+}
+.print-only { display: none; }
+
+/* ── LAYOUT ── */
+header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 28px 20px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.header-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.header-title {
+  font-family: var(--serif);
+  font-size: clamp(18px, 4vw, 26px);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  flex: 1;
+}
+.header-title span {
+  color: var(--gold-light);
+  font-style: italic;
+}
+.header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid #555;
+  color: #ccc;
+}
+.btn-outline:hover { border-color: var(--gold-light); color: var(--gold-light); }
+.btn-gold {
+  background: var(--gold);
+  color: white;
+}
+.btn-gold:hover { background: var(--gold-light); }
+
+/* ── TABS ── */
+.tab-bar {
+  background: var(--ink);
+  border-top: 1px solid #333;
+  padding: 0 20px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: #ccc;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 10px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.tab-btn:hover { color: #fff; }
+.tab-btn.active { color: var(--gold-light); border-bottom-color: var(--gold-light); }
+
+/* ── MAIN ── */
+main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── GUIDE TAB ── */
+.guide-intro {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.stat-pill {
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--serif);
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 3px;
+  border: 1px solid #444;
+}
+.stat-pill span { font-size: 20px; font-weight: 700; display: block; color: var(--gold-light); }
+
+.section-card { margin-bottom: 8px; }
+.section-hdr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--warm);
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.section-hdr:hover { background: #ece7db; }
+.section-hdr.open {
+  border-radius: 5px 5px 0 0;
+  border-bottom-color: transparent;
+}
+.section-icon { font-size: 18px; flex-shrink: 0; }
+.section-label {
+  flex: 1;
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.section-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.section-chev {
+  color: var(--muted);
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+.section-chev.open { transform: rotate(180deg); }
+
+.items-wrap {
+  display: none;
+  border: 1px solid var(--rule);
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  background: white;
+}
+.items-wrap.open { display: block; }
+
+.fact-item {
+  padding: 13px 18px;
+  border-bottom: 1px solid #f0ebe0;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.fact-item:last-child { border-bottom: none; }
+.fact-item:hover { background: #faf8f4; }
+.fact-row { display: flex; align-items: flex-start; gap: 10px; }
+.fact-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  margin-top: 7px; flex-shrink: 0;
+}
+.fact-label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.fact-arrow { color: var(--muted); font-size: 10px; margin-top: 5px; flex-shrink: 0; }
+.fact-detail {
+  display: none;
+  margin-top: 8px;
+  padding-left: 17px;
+  font-size: 13px;
+  color: var(--slate);
+  line-height: 1.65;
+  border-left: 3px solid #e0d8c4;
+}
+.fact-detail.open { display: block; }
+
+/* ── CHECKLIST TAB ── */
+.checklist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.checklist-header h2 {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+}
+.progress-bar-wrap {
+  background: var(--rule);
+  border-radius: 20px;
+  height: 8px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  background: var(--green);
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.3s;
+  width: 0%;
+}
+.progress-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.cl-section { margin-bottom: 22px; }
+.cl-section-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  border-bottom: 2px solid var(--rule);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.1s;
+  margin-bottom: 2px;
+}
+.checklist-item:hover { background: var(--warm); }
+.checklist-item.checked { opacity: 0.5; }
+.checklist-item input[type=checkbox] {
+  width: 16px; height: 16px;
+  margin-top: 2px;
+  accent-color: var(--green);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.checklist-item label {
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  line-height: 1.5;
+}
+.checklist-item.checked label {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+/* ── CALCULATOR TAB ── */
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+@media (max-width: 560px) { .calc-grid { grid-template-columns: 1fr; } }
+.calc-card {
+  background: white;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 20px;
+}
+.calc-card h3 {
+  font-family: var(--serif);
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 8px;
+}
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+.calc-result {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 6px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+.calc-result h3 {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--gold-light);
+  margin-bottom: 16px;
+}
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #444;
+  font-size: 14px;
+  color: #fff;
+}
+.result-row:last-child { border-bottom: none; }
+.result-row span:first-child { color: #ddd; }
+.result-row .rval { font-weight: 600; font-family: var(--serif); font-size: 16px; color: #fff; }
+.result-row .rval.red { color: #ff8080; }
+.result-row .rval.green { color: #80cc80; }
+.result-row .rval.gold { color: var(--gold-light); }
+.result-warn {
+  background: #3a1a00;
+  border-left: 3px solid #c85a00;
+  padding: 10px 14px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #ffcc80;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ── MODEL LOOKUP TAB ── */
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+.model-card {
+  background: white;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.model-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-color: var(--gold); }
+.model-card h4 {
+  font-family: var(--serif);
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.model-card .model-sub { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+.rating-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; }
+.rating-bar { background: var(--rule); border-radius: 10px; height: 5px; margin-bottom: 8px; overflow: hidden; }
+.rating-fill { height: 100%; border-radius: 10px; }
+.badge-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+.badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.badge-good { background: #d4edda; color: #1a4a2e; }
+.badge-warn { background: #fff3cd; color: #6b4c00; }
+.badge-bad { background: #f8d7da; color: #6b1a1a; }
+
+.model-detail-panel {
+  display: none;
+  background: white;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 22px;
+  margin-top: 16px;
+}
+.model-detail-panel.open { display: block; }
+.model-detail-panel h3 { font-family: var(--serif); font-size: 20px; margin-bottom: 4px; }
+.model-detail-panel .sub { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+.detail-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 560px) { .detail-sections { grid-template-columns: 1fr; } }
+.detail-block h5 {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 4px;
+}
+.detail-block ul { padding-left: 16px; }
+.detail-block li { font-size: 13px; color: var(--slate); margin-bottom: 4px; line-height: 1.5; }
+.detail-block li.warn { color: var(--red); }
+.detail-block li.good { color: var(--green); }
+.model-search {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  font-family: var(--sans);
+  font-size: 14px;
+  background: white;
+  margin-bottom: 6px;
+}
+.model-search:focus { outline: none; border-color: var(--gold); }
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.filter-btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--rule);
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--sans);
+}
+.filter-btn:hover, .filter-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .header-inner { gap: 10px; }
+  .header-actions { width: 100%; justify-content: flex-end; }
+  main { padding: 18px 12px 60px; }
+}
+</style>
+</head>
+<body>
+
+<header class="no-print">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">Used Car <span>Buyer's Toolkit</span></div>
+      <div style="font-size:11px;color:#ddd;margin-top:3px;">Reference guide · Checklist · Calculator · Model lookup</div>
+    </div>
+    <div class="header-actions"></div>
+  </div>
+</header>
+
+<div class="tab-bar no-print">
+  <button class="tab-btn active" onclick="switchTab('guide',this)">📖 Full Guide</button>
+  <button class="tab-btn" onclick="switchTab('checklist',this)">✅ Checklist</button>
+  <button class="tab-btn" onclick="switchTab('calc',this)">🧮 Cost Calculator</button>
+  <button class="tab-btn" onclick="switchTab('models',this)">🔍 Model Lookup</button>
+</div>
+
+<main>
+
+<!-- ══════════════ GUIDE TAB ══════════════ -->
+<div id="tab-guide" class="tab-content active">
+  <div class="guide-intro">
+    <div class="stat-pill"><span>11</span>Categories</div>
+    <div class="stat-pill"><span>100+</span>Factors</div>
+    <div class="stat-pill"><span>14</span>Lenders</div>
+  </div>
+  <div id="guide-sections"></div>
+</div>
+
+<!-- ══════════════ CHECKLIST TAB ══════════════ -->
+<div id="tab-checklist" class="tab-content">
+  <div class="checklist-header">
+    <div>
+      <h2>Buying Checklist</h2>
+      <p style="font-size:13px;color:var(--muted);margin-top:4px;">Check off each item as you go. Progress saves in this session.</p>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-outline" onclick="resetChecklist()">Reset</button>
+    </div>
+  </div>
+  <div class="progress-label" id="cl-progress-label">0 of 0 complete</div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="cl-bar"></div></div>
+  <div id="checklist-body"></div>
+
+  <div class="print-only" style="margin-top:30px;font-size:11px;color:#888;border-top:1px solid #ccc;padding-top:10px;">
+    Used Car Buyer's Checklist · Print and bring to every car viewing
+  </div>
+</div>
+
+<!-- ══════════════ CALCULATOR TAB ══════════════ -->
+<div id="tab-calc" class="tab-content">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h2 style="font-family:var(--serif);font-size:22px;margin-bottom:6px;">True Cost Calculator</h2>
+      <p style="font-size:13px;color:var(--muted);">Enter the vehicle details and your loan info to see the full picture before you buy.</p>
+    </div>
+    <button class="btn" onclick="clearCalc()" style="background:#fff;border:1px solid var(--rule);color:var(--slate);margin-top:4px;font-size:13px;">🗑️ Clear All</button>
+  </div>
+
+  <div class="calc-grid">
+    <div class="calc-card">
+      <h3>Vehicle & Purchase</h3>
+      <div class="field"><label>Asking Price ($)</label><input type="number" id="c-price" value="18000" oninput="calcAll()"></div>
+      <div class="field"><label>Your Offer / Negotiated Price ($)</label><input type="number" id="c-offer" value="16500" oninput="calcAll()"></div>
+      <div class="field"><label>State Sales Tax (%)</label><input type="number" id="c-tax" value="3" step="0.1" oninput="calcAll()"></div>
+      <div class="field"><label>Title & Registration ($)</label><input type="number" id="c-reg" value="250" oninput="calcAll()"></div>
+      <div class="field"><label>Dealer Doc Fee ($)</label><input type="number" id="c-doc" value="599" oninput="calcAll()"></div>
+      <div class="field"><label>Immediate Repairs Budget ($)</label><input type="number" id="c-repair" value="800" oninput="calcAll()"></div>
+    </div>
+
+    <div class="calc-card">
+      <h3>Financing</h3>
+      <div class="field"><label>Down Payment ($)</label><input type="number" id="c-down" value="3000" oninput="calcAll()"></div>
+      <div class="field"><label>Annual Interest Rate (%)</label><input type="number" id="c-rate" value="8.5" step="0.1" oninput="calcAll()"></div>
+      <div class="field"><label>Loan Term (months)</label>
+        <select id="c-term" onchange="calcAll()">
+          <option value="36">36 months</option>
+          <option value="48">48 months</option>
+          <option value="60" selected>60 months</option>
+          <option value="72">72 months</option>
+          <option value="84">84 months</option>
+        </select>
+      </div>
+      <div class="field"><label>Monthly Insurance Est. ($)</label><input type="number" id="c-ins" value="120" oninput="calcAll()"></div>
+      <div class="field"><label>Expected MPG</label><input type="number" id="c-mpg" value="24" oninput="calcAll()"></div>
+      <div class="field"><label>Miles Driven / Year</label><input type="number" id="c-miles" value="14000" oninput="calcAll()"></div>
+    </div>
+  </div>
+
+  <div class="calc-result">
+    <h3>Your Full Cost Breakdown</h3>
+    <div id="calc-output"></div>
+  </div>
+</div>
+
+<!-- ══════════════ MODEL LOOKUP TAB ══════════════ -->
+<div id="tab-models" class="tab-content">
+  <div style="margin-bottom:16px;">
+    <h2 style="font-family:var(--serif);font-size:22px;margin-bottom:6px;">Model Reliability Lookup</h2>
+    <p style="font-size:13px;color:var(--muted);">Common used car models with known issues, financing notes, and ownership costs.</p>
+  </div>
+  <input class="model-search" type="text" placeholder="Search make or model..." oninput="filterModels(this.value)" />
+  <div class="filter-row" id="filter-row">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('japanese',this)">Japanese</button>
+    <button class="filter-btn" onclick="setFilter('german',this)">German</button>
+    <button class="filter-btn" onclick="setFilter('american',this)">American</button>
+    <button class="filter-btn" onclick="setFilter('best',this)">⭐ Best Value</button>
+    <button class="filter-btn" onclick="setFilter('caution',this)">⚠️ Buyer Caution</button>
+  </div>
+  <div id="model-grid" class="model-grid"></div>
+  <div id="model-detail" class="model-detail-panel"></div>
+</div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+
+const sections = [
+  { icon:"💰", title:"Budget & True Cost of Ownership", color:"#2a7a4a",
+    items:[
+      ["Purchase price vs. total cost of ownership","Sticker price is only the beginning. The true cost includes taxes, fees, insurance, fuel, repairs, and financing interest — often 20–40% more than the purchase price over the loan term."],
+      ["Sales tax","Varies by state. NC: 3% Highway Use Tax (capped at $2,000 on most vehicles). FL: 6% base + county surtax. Can add $500–$1,800 on a mid-range used vehicle."],
+      ["Title & registration fees","Typically $100–$400 depending on state, vehicle weight, and age. NC: around $50–$100 for title + registration."],
+      ["Documentation (dealer) fees","NC dealers charge up to $599 doc fee by law. FL has no cap — some charge $1,000+. Always ask. Some dealers will reduce this on the right deal."],
+      ["Insurance costs BEFORE you buy","Call your insurer with the VIN before purchase. Older, higher-mileage cars can still be expensive to insure if the model has high theft or repair rates (Kia, Hyundai notably)."],
+      ["Extended warranty / service contract","Factor in cost before buying. Third-party warranties (CARCHEX, Endurance, Autopom) often better value than dealer F&I. Read what's excluded — it's usually more than included."],
+      ["Immediate repair budget","Budget 5–10% of purchase price for repairs on any used vehicle. A $12,000 car should have a $600–$1,200 repair reserve ready to go."],
+      ["Fuel cost difference between vehicles","A 10 MPG difference = ~$800–$1,200/year at current fuel prices. Over 5 years that's a real number — factor it into comparisons."],
+      ["Parking, HOA, or storage fees","Relevant if moving to a condo, marina community, or area with parking costs."],
+    ]
+  },
+  { icon:"📋", title:"Vehicle History & Carfax/AutoCheck", color:"#2a4a8a",
+    items:[
+      ["Carfax vs. AutoCheck — run both","They source from different databases. A clean Carfax can still show issues on AutoCheck. AutoCheck often catches auction history and out-of-state incidents that Carfax misses. $25–$40 for both. Worth every cent."],
+      ["Accident history","Note number of incidents, severity (airbag deployment = major structural event), and whether repairs were done at a certified body shop. One minor fender bender is very different from a rollover."],
+      ["Structural/frame damage","This is a deal-breaker for most buyers. Frame damage affects safety, alignment, and resale value permanently. Walk away unless the price is deeply discounted AND a pre-purchase inspection confirms it's safe."],
+      ["Number of previous owners","1–2 owners is ideal. Fleet or rental use isn't automatically bad — often well-maintained — but means high-volume hard use. More owners = more unknown history gaps."],
+      ["Title issues","Clean title is non-negotiable for most financing. Salvage, rebuilt, flood, lemon law buyback, or junk titles = lenders won't touch it and resale is severely impacted. Know before you go."],
+      ["Odometer rollback flag","Carfax logs reported mileage at each inspection/service event. A declining or stagnant mileage pattern is serious fraud. Walk away immediately."],
+      ["Service & maintenance records","Regular documented oil changes, timing belt service, transmission service = seller who maintained the vehicle. Absence of records doesn't mean neglect, but it's a yellow flag."],
+      ["Rental/fleet use","Often depreciated quickly but maintained on strict schedules. Former rental cars (ex-Enterprise, Hertz) can be good values — just inspect thoroughly."],
+      ["Open safety recalls","Check NHTSA.gov with the VIN for free. Unresolved safety recalls must be repaired free by franchised dealers even on used vehicles you own. Unrepaired recalls are a negotiating chip."],
+      ["Lien/loan on title","Ensure the seller has clear title or the lien is fully paid at closing. For private sellers: get a lien release letter from their lender or close through a title company."],
+      ["Theft recovery vehicles","Some theft-recovery vehicles have hidden damage from break-ins or hot-wiring. Discount heavily, inspect thoroughly, or walk away."],
+    ]
+  },
+  { icon:"🛣️", title:"Mileage Considerations", color:"#6a2a8a",
+    items:[
+      ["Average mileage benchmark","~12,000–15,000 miles/year is average. A 2019 model should have roughly 60,000–90,000 miles. Significantly above average = price accordingly; significantly below = investigate why."],
+      ["Highway vs. city miles","Highway miles are far easier on engines, transmissions, and brakes than stop-and-go city driving. Ask the seller or look at where the car was registered (VIN decode shows original state)."],
+      ["The 100,000-mile psychological barrier","100k is a mental barrier for buyers, not an engineering one. Many modern vehicles — especially Japanese brands — routinely reach 200,000–250,000 miles with proper maintenance."],
+      ["Lexus/Toyota at 100k+","Legendarily reliable. A well-maintained RX 350 or Camry at 100k–150k is often mid-life. Timing chains (not belts) on most, bulletproof V6 engines. Best value segment in used cars."],
+      ["Honda at 100k+","CR-V, Accord, Pilot all excellent beyond 100k with proper maintenance. Check CVT transmission history on 2015+ CR-V if equipped."],
+      ["German luxury at 100k+","BMW, Mercedes, Audi over 100k require real scrutiny. Parts and labor run 2–3x Japanese brands. A $15k Mercedes can easily need $4,000–$8,000 in deferred maintenance. Get a specialist pre-purchase inspection."],
+      ["Mileage sweet spot for value","60,000–90,000 miles on a reliable make often gives the best value: significant depreciation already absorbed, but many miles remaining."],
+      ["Low mileage ≠ low risk","A 12-year-old car with 35,000 miles may have degraded rubber seals, dried fluids, brake rot, fuel system issues, and rust from sitting. Age is as important as miles."],
+      ["Mileage and financing limits","Most mainstream lenders cap at 100,000–125,000 miles. Above that, expect shorter terms, higher rates, or outright decline. See the Financing section."],
+    ]
+  },
+  { icon:"🔧", title:"Pre-Purchase Inspection (PPI)", color:"#8a2a2a",
+    items:[
+      ["Always get a PPI — no exceptions","A $100–$200 independent inspection is the single highest-return expenditure in the used car buying process. It can save you $3,000–$15,000 in surprise repairs. Never skip on a private sale."],
+      ["Who to use for a PPI","Use an independent mechanic with no relationship to the seller. Find a highly-rated local shop on Google. AAA-approved shops are consistently reliable. Avoid dealer service departments for competitor inspections."],
+      ["Full scope of a proper PPI","Engine compression test, fluid condition analysis, brake thickness measurement, tire tread and condition, suspension/steering components, AC/heat function, all electrical systems, OBD scan for codes, undercarriage inspection on a lift."],
+      ["OBD-II scan yourself first","Buy a $25 Bluetooth OBD-II adapter and use the Torque app before the PPI. Check for stored and pending codes. Sellers sometimes clear codes — pending codes reappear within a drive cycle and show up on a scan."],
+      ["Lift inspection is mandatory","Insist on putting the car on a lift. Frame rust, subframe damage, oil leaks, CV axle wear, exhaust condition, and structural damage are invisible from above. This is especially critical for vehicles from rust-belt states."],
+      ["Compression test for high-mileage vehicles","Low cylinder compression signals worn piston rings or valve problems — major engine work ahead. A leakdown test is even more informative. Worth the added cost on anything over 100k miles."],
+      ["Fluid condition tells a story","Brown or gritty ATF = neglected transmission. Milky/foamy oil = coolant contamination (head gasket concern). Dark, sludgy coolant = cooling system neglect. Low power steering fluid = leak somewhere."],
+      ["Tire condition assessment","Use a quarter for tread depth — Lincoln's head visible = 4/32\" or less, replace soon. Check for uneven wear: inner or outer edge wear = alignment issue. Cupping/scalloping = bad shocks or wheel balance."],
+      ["Brake inspection","Pad thickness under 3mm = replace immediately. Scored, grooved, or pulsating rotors = replace. Soft or spongy pedal = brake fluid moisture or caliper issue."],
+      ["AC system check","Critical in NC and FL. Verify it cools to 45°F or below at the vent within 2–3 minutes. Recharging is $100–$150. Compressor replacement is $800–$1,800+."],
+      ["Paint thickness gauge test","A $20–$40 paint thickness gauge from Amazon reveals repainted panels over body filler from accident repairs — even when Carfax shows clean. Readings above 200 microns indicate filler or repainting."],
+      ["Rust inspection checklist","Check: wheel arch lips, rear quarter panels, rocker panels beneath the doors, frame rails (lift required), subframe mounting points, spare tire well in the trunk, floor pans inside."],
+    ]
+  },
+  { icon:"🏦", title:"Financing: Rates, Terms & Strategy", color:"#1a5a5a",
+    items:[
+      ["Credit score tiers and what they cost you","750+: best rates (6–9% currently on used). 700–749: slightly higher. 650–699: subprime begins (12–18%). Below 620: very limited options, high rates, or large down payment required. Know your score before shopping."],
+      ["Get pre-approved BEFORE you step on a lot","Pre-approval from your bank or credit union gives you a rate baseline and negotiating power. Dealers cannot manipulate rates if you already have an approval in hand. Takes 10 minutes online."],
+      ["Credit unions almost always beat banks","NC State Employees Credit Union (SECU), Coastal Credit Union, PenFed, and Suncoast (FL) routinely beat big banks by 1–3 percentage points. On a $15,000 loan at 60 months, 2% = ~$900 savings."],
+      ["Dealer financing (F&I department)","Dealers arrange loans through lenders and mark up the rate (called dealer reserve — they keep the difference). Let them try to beat your pre-approval, but never enter without one."],
+      ["Current rate environment (2025–2026)","Rates remain elevated vs. 2020–2021 lows. Expect 7–13% for solid credit on used vehicles. Shop multiple lenders — the spread between best and worst offers can be 4–6 percentage points."],
+      ["36-month term","Lowest total interest cost. Payment will be highest. Best choice if you can afford it on vehicles under $12,000. Lenders rarely have restrictions at this term."],
+      ["48-month term","Good balance of payment and interest. Available from most lenders on vehicles up to 10–12 years old with reasonable mileage."],
+      ["60-month term","Most common. Watch lender restrictions on older/high-mileage vehicles — many require 2017 or newer for 60-month terms. You'll pay meaningfully more in interest vs. 36 or 48 months."],
+      ["72-month term","Many lenders require vehicle within 5–6 model years AND under 100k miles. Monthly payment looks low but total interest is significantly higher. Avoid unless cash flow is genuinely constrained."],
+      ["84-month term","Rare on used cars. Typically only offered on very recent, low-mileage vehicles. Total interest cost is the highest. You're almost certainly underwater on the loan for years."],
+      ["Loan-to-Value (LTV) ratio","Lenders loan against NADA or KBB book value — not your purchase price. If you overpay for a high-mileage car, the lender may only approve 80–100% of book value, requiring you to cover the gap in cash."],
+    ]
+  },
+  { icon:"⚠️", title:"Financing Vehicles Over 100,000 Miles", color:"#8a5a1a",
+    items:[
+      ["SECU — NC State Employees Credit Union","Will finance older and higher-mileage vehicles but typically shortens terms. Expect 36–48 months for vehicles over 100k miles. Excellent rates for NC members. Call your branch and describe the specific vehicle."],
+      ["PenFed Credit Union (nationwide)","Finances vehicles up to 10 model years old. High-mileage vehicles may require a larger down payment. Terms typically 48–60 months max depending on age and mileage. Strong rates for members."],
+      ["Navy Federal Credit Union","More flexible on older vehicles for qualifying members (military and family). May approve 60 months on vehicles in documented good condition even over 100k miles. Worth a call for members."],
+      ["Capital One Auto Finance","Will finance over 100k miles but shortens terms on older vehicles. Expect 48 months on high-mileage older cars. Online pre-qualification is fast and won't hurt your credit. Rate will be higher than a credit union."],
+      ["Bank of America Auto Loans","Typically won't finance vehicles over 10 model years old or over 125,000 miles. For the 100k–125k range, expect 48 months maximum. Not the most flexible lender for older vehicles."],
+      ["Wells Fargo Auto","Similar restrictions to BofA. Hard cap around 125k miles. Terms shorten significantly as mileage and age increase. Not recommended for high-mileage vehicle financing."],
+      ["Chase Auto Finance","Generally requires vehicle within 10 model years and under 120,000 miles for standard financing. Not flexible on older high-mileage vehicles."],
+      ["LightStream (division of Truist)","The best option for high-mileage and older vehicles: unsecured personal auto loans with NO mileage or age restrictions. Terms from 36–84 months. Requires excellent credit (720+ typically). Rate slightly higher than secured auto loans but worth it for older vehicles."],
+      ["Upgrade / LendingClub / personal loan route","If a vehicle is too old or high-mileage for any auto lender, a personal (unsecured) loan has no vehicle restrictions. Rates will be 2–5% higher than secured auto loans. Use only when no auto loan is available."],
+      ["USAA Auto Finance","Exclusively for military members and families. Generally more flexible on older vehicles than big banks. Rates are competitive. Call and describe the specific vehicle — they make case-by-case decisions."],
+      ["Local and community banks","Frequently the most flexible lender available. Can make individual decisions a big bank's algorithm won't. A 20%+ down payment, good relationship, and documented vehicle condition can unlock terms unavailable elsewhere."],
+      ["Dealer Buy Here Pay Here (BHPH)","Absolute last resort for poor credit situations only. Rates of 18–29% are common. Vehicles are often GPS-tracked and payment-activated. Avoid if any alternative exists."],
+      ["20%+ down payment strategy","A substantial down payment dramatically improves lender willingness on high-mileage/older vehicles. Reduces their risk, improves your LTV ratio, lowers monthly payment, and may unlock a better interest rate."],
+      ["GAP insurance for financed used cars","Buy GAP if financing more than 80% of a vehicle's value. Covers the difference if the car is totaled and you owe more than the insurance payout. Buy from your auto insurer — typically $30–$60/year vs. $500–$900 from a dealer."],
+    ]
+  },
+  { icon:"⚙️", title:"Mechanical Reliability Research", color:"#2a5a1a",
+    items:[
+      ["Consumer Reports reliability data","The gold standard for used car reliability. Subscribers see model-year-specific scores across 17 problem areas. $49/year subscription pays for itself many times over when buying a car."],
+      ["J.D. Power Vehicle Dependability Study","Tracks 3-year-old vehicles. Useful for understanding how specific models age and which problem areas emerge after the warranty period."],
+      ["Model-specific owner forums","ClubLexus, BimmerFest, AcuraZine, Bob Is The Oil Guy — real owners document real issues over years. Search '[year] [model] common problems' before any purchase. This is where you find the things Consumer Reports misses."],
+      ["Timing belt vs. timing chain","Belt requires scheduled replacement every 60,000–90,000 miles ($800–$1,500 typical). Chain is theoretically lifetime but can stretch and rattle (BMW and some VAG engines notorious for this). Know which your vehicle has."],
+      ["CVT transmission caution","Continuously Variable Transmissions fail expensively ($3,000–$5,000+ to replace). Nissan CVTs are particularly problematic. Check fluid service history rigorously. Avoid Nissan CVTs over 100k miles without extended warranty."],
+      ["Known high-risk components by brand","Toyota/Lexus 2GR-FE V6 (2007–2013): oil consumption issue — check oil level carefully during test drive. BMW N52/N54: timing chain guides. Mercedes ABC suspension: $3,000–$8,000 failure. Audi/VW DSG: $3,000+ clutch service."],
+      ["Rust-prone vehicle origins","VIN decode reveals original state of registration. Vehicles from Michigan, Ohio, Pennsylvania, New York, and New England have significantly more rust risk than NC and FL vehicles."],
+      ["Parts cost comparison by brand","Before buying, look up the most expensive common repair for the model on RockAuto. German luxury parts often run $300–$800 for items that cost $40–$80 on Japanese models. Know your ownership cost before committing."],
+    ]
+  },
+  { icon:"🤝", title:"Price Research & Negotiation", color:"#1a2a6a",
+    items:[
+      ["Edmunds True Market Value","Most accurate real-world transaction price. Use Edmunds as your primary pricing reference. KBB tends to favor dealers; Edmunds reflects actual sale data."],
+      ["NADA Guides","Lenders use NADA for loan valuations. Get the NADA value to know the maximum a lender will finance — critical if you need a loan."],
+      ["CarGurus deal rating","CarGurus shows whether a specific listing is a Good, Fair, or High Deal compared to the market. Use it to instantly benchmark dealer listings before calling."],
+      ["Private sale vs. dealer comparison","Private: typically 10–20% below dealer pricing, but no warranty, harder to finance, more inspection responsibility. Dealer: convenience, CPO options, financing, but higher price. Neither is always better."],
+      ["Starting offer strategy","Start 10–15% below asking price with a specific dollar number, not a percentage. Reference comparable listings on CarGurus. Use PPI findings as direct leverage for price reductions."],
+      ["The out-the-door (OTD) price rule","Always negotiate the total OTD price — final number including all taxes, fees, and add-ons. Never negotiate from a monthly payment — dealers use payment math to obscure total cost."],
+      ["F&I add-ons to decline","Paint/fabric protection ($200–$500 profit, worthless), nitrogen tires (free at most tire shops), window tinting (get it done independently for $100–$150 less), credit life insurance."],
+      ["F&I add-ons worth considering","GAP insurance (from your own insurer, not the dealer — much cheaper). Tire and wheel protection if you're in a pothole-heavy area. CPO certified warranty from manufacturer (different from third-party)."],
+      ["Walking away is your strongest tool","Dealers know that every hour you spend on the lot increases the probability of purchase. Be prepared to leave. A phone call with a better offer from across town is worth more than an hour of negotiation in person."],
+    ]
+  },
+  { icon:"🚗", title:"Test Drive Checklist", color:"#4a2a6a",
+    items:[
+      ["Cold start inspection","Arrive before the seller warms the car. Cold start reveals: rough idle, blue smoke (oil burning), white smoke (coolant), hard starts. A warmed engine hides many problems."],
+      ["Highway speeds","Get the vehicle to 65–70 mph. Check for vibrations (tire balance or driveshaft), pulling to one side (alignment), wandering (worn steering components), or wind noise (door seals)."],
+      ["Full-throttle acceleration test","Hard acceleration from 30 mph. Feel for hesitation, stumbling, transmission slipping, or any unusual sounds. This loads the engine and transmission in a way cruise driving doesn't."],
+      ["Hard braking test","From 40 mph, brake firmly in a safe area. Pulling to one side = uneven brakes. Pulsating or shuddering pedal = warped rotors. Soft spongy pedal = brake fluid moisture or caliper issue."],
+      ["Complete electronics test","Every window, mirror, seat position, sunroof/moonroof, infotainment screen, Bluetooth, backup camera, parking sensors, heated seats, heated steering wheel. Parts and labor for electronics can run $200–$800+ each."],
+      ["AC and heat","Run AC on max cool — should reach 45°F or below at the vent within 2–3 minutes. Run heat on max — should be hot within 3–4 minutes. Both failures can mean expensive repairs."],
+      ["Steering wheel feel","Excessive play, wandering, pulling, or vibration in the wheel at speed indicates alignment, tie rod ends, or steering rack issues. A loose steering wheel is never normal."],
+      ["Automatic transmission shifts","Should shift smoothly, firmly, and promptly at normal throttle. Hard shifts, slipping (RPMs rise without acceleration), or hesitation between gears = transmission service or worse."],
+      ["Smell test","Mildew or wet carpet smell = water intrusion or flood damage. Burning smell from engine bay = oil leak onto hot exhaust. Burning from interior = electrical issue. Smoke from exhaust = major engine concern."],
+      ["Parking brake function","On an incline, set the parking brake and release the foot brake. Car should hold. A rolling car = parking brake needs adjustment or replacement."],
+    ]
+  },
+  { icon:"📄", title:"Paperwork & Legal", color:"#3a3a1a",
+    items:[
+      ["Title must be in seller's name","Never purchase a vehicle where the title is in anyone other than the person selling it — unless you fully understand why (estate sale, business fleet). This is how title fraud happens."],
+      ["Signed bill of sale","Always get a signed bill of sale with: date, purchase price, VIN, year/make/model, both parties' full names and addresses, and a statement that the vehicle is sold as-is."],
+      ["As-Is means no recourse","Most private used car sales are as-is. Once you sign, you own the problems too. This is exactly why pre-purchase inspection is essential — it's your only protection."],
+      ["Federal odometer disclosure","Required by law for vehicles under 10 years old. Dealers who skip this are violating federal law. Always get it in writing."],
+      ["NC annual safety inspection","NC requires annual vehicle safety inspections. Know when the current sticker expires. Some counties also require emissions testing."],
+      ["Certified Pre-Owned (CPO) programs","Manufacturer-backed CPO is the best value in used cars for vehicles under 4–5 years old. Multi-point inspections, extended powertrain warranties backed by the manufacturer — not a third-party contract. Worth a small premium."],
+      ["Private sale payment","Cash or a cashier's check verified at your bank. Never wire transfer, Venmo, Zelle, or cryptocurrency to a stranger for a vehicle. Meet at your bank to verify the cashier's check is legitimate before signing."],
+      ["Dealer return policies","Most dealers sell as-is with no returns. CarMax has a 30-day/1,500-mile return policy — a genuine advantage. Some dealers offer 3–7 day windows. Ask specifically and get it in writing."],
+      ["Escrow services for private sales","For high-value private purchases ($20,000+), consider using a licensed escrow service. Both parties are protected and funds only release when title transfers cleanly."],
+    ]
+  },
+  { icon:"📅", title:"Timing & Market Strategy", color:"#1a5a3a",
+    items:[
+      ["End of month — best time to negotiate","Dealers have monthly sales quotas. The last 3–5 days of any month find salespeople most motivated to close. End of quarter (March, June, September, December) is even more powerful."],
+      ["Model year changeover window","August through October: prior model year inventory sits on dealer lots. Less relevant for used cars but affects dealer psychology and willingness to move aging inventory."],
+      ["2025–2026 used car market conditions","Post-COVID prices have softened significantly from 2021–2022 peaks but remain elevated vs. 2019. Inventory has recovered. Buyers have meaningfully more leverage than 3–4 years ago. It's no longer a seller's market."],
+      ["Seasonal demand patterns","Convertibles and sports cars: buy in October–February (lowest demand in South). SUVs and 4WD: buy in summer. Trucks: always high demand in NC, SC, and rural markets — less seasonal flexibility."],
+      ["Rain or bad weather advantage","Go look at cars on rainy days. Fewer buyers on the lot = more dealer attention and willingness to deal. You can also inspect for water leaks in the cabin during rain."],
+      ["Take 30–60 days to shop","The specific car you're attached to will appear again. Rushing a $15,000–$30,000 decision because you feel urgency is how you overpay and overlook problems. Patience is the most underrated car-buying strategy."],
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════
+// MODEL DATA
+// ═══════════════════════════════════════════
+
+const models = [
+  {
+    make:"Toyota", model:"Camry", years:"2012–2022", category:"japanese", tag:"best",
+    reliability:95, costToOwn:88, financing:"Easy — any lender, up to 125k miles",
+    color:"#2a7a4a",
+    pros:["Extremely reliable 2.5L or 3.5L engine","Parts widely available and cheap","Holds value well — easy to resell","Excellent long-term ownership record"],
+    cons:["V6 models use more fuel","Some 4-cyl models feel underpowered","Interior can feel plain on base trims"],
+    watchFor:["Check ATF condition — fluid changes often skipped","2018–2020 4-cyl: verify no oil consumption","Test all electronics on higher trims"],
+    financing100k:"Most lenders will finance at 100k miles. SECU and PenFed most favorable. 60-month terms widely available under 120k.",
+    badges:[{label:"Best Value",type:"good"},{label:"Easy to Finance",type:"good"}]
+  },
+  {
+    make:"Lexus", model:"RX 350", years:"2007–2022", category:"japanese", tag:"best",
+    reliability:93, costToOwn:82, financing:"Good — credit unions most flexible over 100k",
+    color:"#1a4a6a",
+    pros:["2GR-FE V6 is one of the most reliable engines built","Timing chain (not belt)","Luxury features at used-market prices","Strong resale value"],
+    cons:["2007–2012: oil consumption issue on some 2GR-FE engines (check dipstick)","Premium fuel recommended","Higher insurance cost"],
+    watchFor:["Check oil level at purchase and after test drive (consumption issue)","Verify timing chain doesn't rattle on cold start","Check rear hatch struts and moonroof seal"],
+    financing100k:"Credit unions (SECU, PenFed, Navy Fed) most flexible. Expect 48–60 months at 100k–140k miles. LightStream if needed.",
+    badges:[{label:"Legendary Engine",type:"good"},{label:"Check Oil Use",type:"warn"}]
+  },
+  {
+    make:"Honda", model:"CR-V", years:"2015–2022", category:"japanese", tag:"best",
+    reliability:89, costToOwn:85, financing:"Easy at most lenders under 120k",
+    color:"#2a6a3a",
+    pros:["Excellent fuel economy","Reliable and practical","Strong dealer and independent support","Holds value well"],
+    cons:["1.5L turbo (2017+): oil dilution issue in cold climates — less concern in NC/FL","CVT on some models requires careful inspection","Tight rear cargo floor"],
+    watchFor:["Check for 1.5T oil dilution (smell oil dipstick for fuel odor)","Verify CVT fluid was changed at 60k","Test infotainment — known software issues on some years"],
+    financing100k:"Standard lenders up to 120k, credit unions to 130k+. 60 months widely available.",
+    badges:[{label:"Best Fuel Economy",type:"good"},{label:"1.5T Oil Issue",type:"warn"}]
+  },
+  {
+    make:"Toyota", model:"Tacoma", years:"2016–2022", category:"japanese", tag:"best",
+    reliability:88, costToOwn:79, financing:"Very easy — trucks finance well",
+    color:"#3a5a1a",
+    pros:["Holds value better than almost any used vehicle","Extremely reliable drivetrain","Off-road capability","Strong resale in NC market"],
+    cons:["High demand = prices stay elevated even used","2016–2019: transmission hesitation and hunting known issue","Ride quality rough for a daily driver"],
+    watchFor:["2016–2019: test transmission for hesitation around 35–45 mph","Check frame for rust on older models","Verify towing/payload capacity if that's a need"],
+    financing100k:"Excellent at virtually all lenders — trucks are preferred collateral. 60–72 months available at 100k.",
+    badges:[{label:"Holds Value",type:"good"},{label:"High Demand",type:"warn"}]
+  },
+  {
+    make:"BMW", model:"3 Series", years:"2012–2019", category:"german", tag:"caution",
+    reliability:62, costToOwn:48, financing:"Tighter over 100k — use LightStream or CU",
+    color:"#5a2a1a",
+    pros:["Excellent driving dynamics","Premium features at depreciated prices","Smooth inline-6 engines (if you get one)"],
+    cons:["Parts and labor 2–4x Japanese brands","Timing chain guides (N52/N54) can fail","Electric water pump and thermostat known failures","Very high deferred maintenance risk on neglected examples"],
+    watchFor:["N54/N55 engine: check for carbon buildup (needs walnut blasting ~$600)","Verify timing chain doesn't rattle on cold start","Check all electronics — expensive to repair","Get full service records — non-negotiable on BMW"],
+    financing100k:"Most mainstream lenders reluctant over 100k. Use LightStream (no vehicle restrictions), PenFed, or Navy Federal. Expect higher rates.",
+    badges:[{label:"Buyer Caution",type:"bad"},{label:"Parts: Expensive",type:"bad"},{label:"Great to Drive",type:"good"}]
+  },
+  {
+    make:"Mercedes-Benz", model:"C300/E350", years:"2013–2020", category:"german", tag:"caution",
+    reliability:60, costToOwn:45, financing:"Difficult over 100k — specialty lenders",
+    color:"#4a1a2a",
+    pros:["Refined interior and ride quality","Extensive safety features","Status and luxury at depreciated prices"],
+    cons:["Very expensive maintenance and repairs","Transmission service often skipped by previous owners","Sunroof drain clogs cause water damage","Airmatic suspension failure: $2,000–$4,000"],
+    watchFor:["Check all warning lights — expensive diagnosis","Look for sunroof drain evidence (stained headliner, wet carpets)","Verify transmission fluid history rigorously","Test every electronic system — repair costs are very high"],
+    financing100k:"Big banks (Chase, BofA, Wells) unlikely over 100k. LightStream (personal loan, any mileage), local credit unions with 20%+ down. High rates common.",
+    badges:[{label:"Buyer Caution",type:"bad"},{label:"High Repair Cost",type:"bad"}]
+  },
+  {
+    make:"Ford", model:"F-150", years:"2015–2022", category:"american", tag:"best",
+    reliability:82, costToOwn:76, financing:"Very easy — trucks preferred by lenders",
+    color:"#1a3a5a",
+    pros:["Most popular vehicle in America — parts everywhere","3.5L EcoBoost very capable","Wide trim range for budget","Strong towing and payload"],
+    cons:["EcoBoost: check for spark plug issues on high-mileage examples","10-speed transmission (2017+): occasional shuddering","Fuel economy not great with EcoBoost under towing"],
+    watchFor:["Check for spark plug blowout history on 5.4L (older models)","Test 10-speed for smooth shifts","Verify tow package if needed — aftermarket can void warranty"],
+    financing100k:"Excellent — trucks are among the easiest vehicles to finance at any mileage. 60–72 months available from most lenders.",
+    badges:[{label:"Easy to Finance",type:"good"},{label:"Parts Everywhere",type:"good"}]
+  },
+  {
+    make:"Chevrolet", model:"Silverado 1500", years:"2014–2022", category:"american", tag:"best",
+    reliability:80, costToOwn:75, financing:"Very easy",
+    color:"#1a2a5a",
+    pros:["Extremely common — easy to find and finance","5.3L V8 very reliable","Wide variety of trim levels and options","Strong towing capacity"],
+    cons:["AFM/DOD lifter failure on 5.3L V8 is a known expensive issue ($2,000–$5,000)","Fuel economy below modern competitors","Interior quality on lower trims dated"],
+    watchFor:["5.3L AFM lifter tick — listen carefully on cold start and idle","Check for lifter failure (ticking, misfire, oil consumption)","Verify no AFM-related codes on OBD scan"],
+    financing100k:"Excellent financing availability. 60–72 months at most lenders.",
+    badges:[{label:"AFM Lifter Risk",type:"warn"},{label:"Easy to Finance",type:"good"}]
+  },
+  {
+    make:"Nissan", model:"Altima/Rogue", years:"2015–2021", category:"japanese", tag:"caution",
+    reliability:65, costToOwn:70, financing:"Standard — watch mileage limits",
+    color:"#5a3a1a",
+    pros:["Reasonable purchase prices","Comfortable interiors","Good initial reliability"],
+    cons:["CVT transmission is the single largest risk — $3,000–$5,000 to replace","CVT failures common over 100k, sometimes earlier","Extended warranty almost mandatory on Nissan CVT"],
+    watchFor:["CVT fluid history — must be changed every 30k–40k miles","Shuddering or slipping on highway acceleration = CVT failure incoming","Avoid any example with deferred CVT maintenance"],
+    financing100k:"Standard financing, but lenders know about CVT issues. Expect tighter terms over 100k on Nissan specifically.",
+    badges:[{label:"CVT Risk: High",type:"bad"},{label:"Get Warranty",type:"warn"}]
+  },
+  {
+    make:"Subaru", model:"Outback/Forester", years:"2015–2022", category:"japanese", tag:"",
+    reliability:78, costToOwn:80, financing:"Standard — most lenders cooperative",
+    color:"#2a4a3a",
+    pros:["Standard AWD — excellent in NC mountain region","Practical and family-friendly","Good safety ratings","Active enthusiast community"],
+    cons:["Head gasket issues on older 2.5L engines (pre-2011 mostly)","Oil consumption on 2011–2014 FA20 engines","CVT on newer models — verify service history"],
+    watchFor:["2011–2014: check for oil consumption test results","Verify head gasket history on any 2.5i (EJ25 engine)","Check for collision damage — AWD systems expensive to repair if misaligned"],
+    financing100k:"Straightforward with most lenders. Credit unions most favorable terms.",
+    badges:[{label:"AWD Standard",type:"good"},{label:"Check Oil Use",type:"warn"}]
+  },
+  {
+    make:"Hyundai/Kia", model:"Sonata/Optima/Elantra", years:"2016–2021", category:"american", tag:"caution",
+    reliability:68, costToOwn:72, financing:"Standard rates, watch insurance costs",
+    color:"#6a2a3a",
+    pros:["Very affordable purchase prices","Good warranty if still active","Modern features at lower price points"],
+    cons:["2015–2020: engine failure (Theta II engine recall) — verify recall completion","Very high theft rates on 2015–2020 without push-button start (insurance surcharge)","Resale value affected by engine recall history"],
+    watchFor:["Check NHTSA for open engine recall — critical, verify completion","Look up VIN for engine recall status at hyundaiusa.com or kia.com","Check insurance cost before buying — theft surcharges are significant in some areas"],
+    financing100k:"Standard, but insurance cost may be the bigger issue. Verify recall completion or walk away.",
+    badges:[{label:"Engine Recall",type:"bad"},{label:"Theft Risk",type:"bad"},{label:"Low Price",type:"good"}]
+  },
+];
+
+// ═══════════════════════════════════════════
+// CHECKLIST DATA
+// ═══════════════════════════════════════════
+
+const checklist = [
+  { section:"Before You Go", items:[
+    "Run Carfax AND AutoCheck reports",
+    "Check NHTSA.gov for open recalls",
+    "Look up NADA and Edmunds value",
+    "Search CarGurus for comparable listings",
+    "Verify seller holds title in their name",
+    "Get pre-approved from your credit union or bank",
+    "Research model-specific known issues",
+    "Call your insurer for an insurance quote on the VIN",
+  ]},
+  { section:"At the Vehicle", items:[
+    "Inspect cold — arrive before engine is warmed",
+    "Check all fluid levels and condition",
+    "OBD-II scan for pending/stored codes",
+    "Inspect tires for tread depth and uneven wear",
+    "Check brake pads through wheel spokes (estimate thickness)",
+    "Inspect undercarriage for rust and leaks (flashlight)",
+    "Check all body panel gaps for accident repair evidence",
+    "Use paint thickness gauge on all panels",
+    "Test all windows, mirrors, and electric seats",
+    "Test sunroof/moonroof open and close",
+    "Test AC — should feel cold within 2 minutes",
+    "Test heat — should be hot within 3 minutes",
+    "Test backup camera and all driver assistance features",
+    "Inspect interior for water stains or mildew smell",
+    "Check spare tire and jack condition",
+  ]},
+  { section:"Test Drive", items:[
+    "Cold start — listen for rough idle, smoke, unusual noises",
+    "Get to highway speed (65+ mph) — vibration, pulling, wandering",
+    "Full throttle acceleration — hesitation, slipping",
+    "Hard braking test — pulling, pulsating pedal",
+    "Automatic transmission: smooth shifts, no slipping",
+    "Check steering for play, vibration, or pulling",
+    "Parking brake test on an incline",
+    "Listen for suspension noise over bumps",
+    "Smell for burning, mildew, or exhaust inside cabin",
+  ]},
+  { section:"Pre-Purchase Inspection", items:[
+    "Book independent PPI at non-affiliated shop",
+    "Request lift inspection specifically",
+    "Request compression or leakdown test (high mileage)",
+    "Get written PPI report with all findings",
+    "Use findings to negotiate final price",
+  ]},
+  { section:"Financing & Paperwork", items:[
+    "Compare at least 3 lender rates (CU + bank + dealer)",
+    "Calculate total OTD price including all fees",
+    "Verify title is in seller's name, clean, and lien-free",
+    "Get signed bill of sale with VIN, price, date, as-is",
+    "Confirm odometer disclosure statement signed",
+    "Understand exactly what warranty (if any) is included",
+    "Decline paint/fabric protection and unnecessary add-ons",
+    "If financed: consider GAP insurance from your own insurer",
+    "Get copies of ALL signed documents",
+    "Confirm NC safety inspection sticker is current",
+  ]},
+];
+
+// ═══════════════════════════════════════════
+// BUILD GUIDE
+// ═══════════════════════════════════════════
+
+function buildGuide() {
+  const container = document.getElementById('guide-sections');
+  sections.forEach((sec) => {
+    const card = document.createElement('div');
+    card.className = 'section-card';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'section-hdr';
+    hdr.innerHTML = `
+      <span class="section-icon">${sec.icon}</span>
+      <div style="flex:1">
+        <div class="section-label">${sec.title}</div>
+        <div class="section-meta">${sec.items.length} factors</div>
+      </div>
+      <span class="section-chev">▾</span>
+    `;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'items-wrap';
+
+    sec.items.forEach(([label, detail]) => {
+      const item = document.createElement('div');
+      item.className = 'fact-item';
+      item.innerHTML = `
+        <div class="fact-row">
+          <div class="fact-dot" style="background:${sec.color}"></div>
+          <div style="flex:1">
+            <div class="fact-label">${label}</div>
+            <div class="fact-detail">${detail}</div>
+          </div>
+          <div class="fact-arrow">▾</div>
+        </div>
+      `;
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const d = item.querySelector('.fact-detail');
+        const a = item.querySelector('.fact-arrow');
+        const isOpen = d.classList.toggle('open');
+        a.textContent = isOpen ? '▴' : '▾';
+        item.style.background = isOpen ? '#faf7f0' : '';
+      });
+      wrap.appendChild(item);
+    });
+
+    hdr.addEventListener('click', () => {
+      const isOpen = wrap.classList.toggle('open');
+      hdr.classList.toggle('open', isOpen);
+      const chev = hdr.querySelector('.section-chev');
+      chev.classList.toggle('open', isOpen);
+      hdr.style.background = isOpen
+        ? `linear-gradient(135deg, ${sec.color}18, ${sec.color}0a)`
+        : '';
+      hdr.style.borderColor = isOpen ? sec.color + '55' : '';
+    });
+
+    card.appendChild(hdr);
+    card.appendChild(wrap);
+    container.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════
+// BUILD CHECKLIST
+// ═══════════════════════════════════════════
+
+let checkState = {};
+let totalChecks = 0;
+
+function buildChecklist() {
+  const body = document.getElementById('checklist-body');
+  let idx = 0;
+  checklist.forEach((sec) => {
+    const secDiv = document.createElement('div');
+    secDiv.className = 'cl-section';
+    secDiv.innerHTML = `<div class="cl-section-title">${sec.section}</div>`;
+    sec.items.forEach((item) => {
+      const key = 'chk-' + idx;
+      totalChecks++;
+      const div = document.createElement('div');
+      div.className = 'checklist-item';
+      div.id = 'ci-' + idx;
+      div.innerHTML = `<input type="checkbox" id="${key}"><label for="${key}">${item}</label>`;
+      div.querySelector('input').addEventListener('change', (e) => {
+        checkState[key] = e.target.checked;
+        div.classList.toggle('checked', e.target.checked);
+        updateProgress();
+      });
+      secDiv.appendChild(div);
+      idx++;
+    });
+    body.appendChild(secDiv);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const checked = Object.values(checkState).filter(Boolean).length;
+  const pct = totalChecks ? Math.round(checked / totalChecks * 100) : 0;
+  document.getElementById('cl-bar').style.width = pct + '%';
+  document.getElementById('cl-progress-label').textContent = `${checked} of ${totalChecks} complete (${pct}%)`;
+}
+
+function resetChecklist() {
+  checkState = {};
+  document.querySelectorAll('.checklist-item input[type=checkbox]').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.checklist-item').forEach(ci => ci.classList.remove('checked'));
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════
+// CALCULATOR
+// ═══════════════════════════════════════════
+
+function calcAll() {
+  const price = +document.getElementById('c-price').value || 0;
+  const offer = +document.getElementById('c-offer').value || price;
+  const taxRate = +document.getElementById('c-tax').value / 100 || 0;
+  const reg = +document.getElementById('c-reg').value || 0;
+  const doc = +document.getElementById('c-doc').value || 0;
+  const repair = +document.getElementById('c-repair').value || 0;
+  const down = +document.getElementById('c-down').value || 0;
+  const annualRate = +document.getElementById('c-rate').value / 100 || 0;
+  const term = +document.getElementById('c-term').value || 60;
+  const ins = +document.getElementById('c-ins').value || 0;
+  const mpg = +document.getElementById('c-mpg').value || 25;
+  const miles = +document.getElementById('c-miles').value || 14000;
+
+  const taxAmt = Math.min(offer * taxRate, offer * taxRate); // NC has $2k cap but let's show real
+  const driveOffTotal = offer + taxAmt + reg + doc + repair;
+  const financed = Math.max(0, offer - down);
+  const monthlyRate = annualRate / 12;
+  let monthlyPayment = 0;
+  if (monthlyRate > 0 && financed > 0) {
+    monthlyPayment = financed * (monthlyRate * Math.pow(1+monthlyRate, term)) / (Math.pow(1+monthlyRate, term) - 1);
+  } else {
+    monthlyPayment = financed / term;
+  }
+  const totalLoanCost = monthlyPayment * term;
+  const totalInterest = totalLoanCost - financed;
+
+  const gasPrice = 3.35;
+  const annualFuel = (miles / mpg) * gasPrice;
+  const totalFuelTerm = annualFuel * (term / 12);
+  const totalInsuranceTerm = ins * term;
+
+  const grandTotal = down + totalLoanCost + taxAmt + reg + doc + repair + totalFuelTerm + totalInsuranceTerm;
+  const savings = price - offer;
+
+  const out = document.getElementById('calc-output');
+  out.innerHTML = `
+    <div class="result-row"><span>Negotiated price</span><span class="rval gold">$${fmt(offer)}</span></div>
+    <div class="result-row"><span>You saved vs. asking</span><span class="rval green">$${fmt(savings)}</span></div>
+    <div class="result-row"><span>Sales tax</span><span class="rval">$${fmt(taxAmt)}</span></div>
+    <div class="result-row"><span>Fees (reg + doc + repairs)</span><span class="rval">$${fmt(reg+doc+repair)}</span></div>
+    <div class="result-row"><span>Drive-off total</span><span class="rval gold">$${fmt(driveOffTotal)}</span></div>
+    <div class="result-row"><span>Amount financed</span><span class="rval">$${fmt(financed)}</span></div>
+    <div class="result-row"><span>Monthly payment</span><span class="rval gold">$${fmt(monthlyPayment)}/mo</span></div>
+    <div class="result-row"><span>Total interest paid (${term} mo @ ${(annualRate*100).toFixed(1)}%)</span><span class="rval red">$${fmt(totalInterest)}</span></div>
+    <div class="result-row"><span>Insurance over loan term</span><span class="rval">$${fmt(totalInsuranceTerm)}</span></div>
+    <div class="result-row"><span>Estimated fuel over loan term</span><span class="rval">$${fmt(totalFuelTerm)}</span></div>
+    <div class="result-row"><span style="font-weight:700">TRUE total cost of ownership</span><span class="rval red" style="font-size:20px">$${fmt(grandTotal)}</span></div>
+    ${totalInterest > 3000 ? `<div class="result-warn">⚠️ You'll pay $${fmt(totalInterest)} in interest. Consider a shorter term or larger down payment to significantly reduce this.</div>` : ''}
+    ${annualRate > 0.10 ? `<div class="result-warn">⚠️ Your rate of ${(annualRate*100).toFixed(1)}% is in subprime territory. Shop credit unions — even 2% better saves $${fmt(financed * 0.02 * (term/12))} over the life of the loan.</div>` : ''}
+  `;
+}
+
+function fmt(n) { return Math.round(n).toLocaleString(); }
+
+// ═══════════════════════════════════════════
+// MODEL LOOKUP
+// ═══════════════════════════════════════════
+
+let activeFilter = 'all';
+let activeModel = null;
+
+function buildModels() { renderModels(models); }
+
+function renderModels(list) {
+  const grid = document.getElementById('model-grid');
+  grid.innerHTML = '';
+  list.forEach((m) => {
+    const card = document.createElement('div');
+    card.className = 'model-card';
+    const relColor = m.reliability >= 85 ? '#2a7a4a' : m.reliability >= 75 ? '#8a6a00' : '#8a2a2a';
+    card.innerHTML = `
+      <h4>${m.make} ${m.model}</h4>
+      <div class="model-sub">${m.years}</div>
+      <div class="rating-row"><span>Reliability</span><span style="color:${relColor};font-weight:600">${m.reliability}/100</span></div>
+      <div class="rating-bar"><div class="rating-fill" style="width:${m.reliability}%;background:${relColor}"></div></div>
+      <div class="rating-row"><span>Value Score</span><span style="font-weight:600">${m.costToOwn}/100</span></div>
+      <div class="rating-bar"><div class="rating-fill" style="width:${m.costToOwn}%;background:#2a4a8a"></div></div>
+      <div class="badge-row">${m.badges.map(b => `<span class="badge badge-${b.type}">${b.label}</span>`).join('')}</div>
+    `;
+    card.addEventListener('click', () => showModel(m, card));
+    grid.appendChild(card);
+  });
+}
+
+function showModel(m, card) {
+  const panel = document.getElementById('model-detail');
+  if (activeModel === m.model && panel.classList.contains('open')) {
+    panel.classList.remove('open');
+    activeModel = null;
+    return;
+  }
+  activeModel = m.model;
+  panel.classList.add('open');
+  panel.innerHTML = `
+    <h3>${m.make} ${m.model}</h3>
+    <div class="sub">${m.years} · Reliability: ${m.reliability}/100 · Value: ${m.costToOwn}/100</div>
+    <div class="detail-sections">
+      <div class="detail-block">
+        <h5>Why Buy</h5>
+        <ul>${m.pros.map(p=>`<li class="good">✓ ${p}</li>`).join('')}</ul>
+      </div>
+      <div class="detail-block">
+        <h5>Watch Out For</h5>
+        <ul>${m.cons.map(c=>`<li class="warn">⚠ ${c}</li>`).join('')}</ul>
+      </div>
+      <div class="detail-block">
+        <h5>Inspect These Specifically</h5>
+        <ul>${m.watchFor.map(w=>`<li>${w}</li>`).join('')}</ul>
+      </div>
+      <div class="detail-block">
+        <h5>Financing at 100k+ Miles</h5>
+        <ul><li>${m.financing100k}</li></ul>
+      </div>
+    </div>
+  `;
+  setTimeout(() => panel.scrollIntoView({ behavior:'smooth', block:'nearest' }), 50);
+}
+
+function filterModels(query) {
+  const q = query.toLowerCase();
+  let list = models.filter(m =>
+    (m.make+' '+m.model).toLowerCase().includes(q)
+  );
+  if (activeFilter !== 'all') {
+    list = list.filter(m => {
+      if (activeFilter === 'best') return m.tag === 'best';
+      if (activeFilter === 'caution') return m.tag === 'caution';
+      return m.category === activeFilter;
+    });
+  }
+  renderModels(list);
+}
+
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterModels(document.querySelector('.model-search').value);
+}
+
+// ═══════════════════════════════════════════
+// PRINT CHECKLIST
+// ═══════════════════════════════════════════
+
+function downloadChecklist() {
+  const clSections = Array.from(document.querySelectorAll('.cl-section'));
+  let rows = '';
+  clSections.forEach(sec => {
+    const title = sec.querySelector('.cl-section-title').textContent.trim();
+    rows += `<tr><td colspan="2" style="background:#222;color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 10px;">${title}</td></tr>`;
+    sec.querySelectorAll('.checklist-item').forEach(item => {
+      const label = item.querySelector('label').textContent.trim();
+      rows += `<tr>
+        <td style="width:28px;padding:7px 10px;border-bottom:1px solid #eee;vertical-align:top;"><div style="width:14px;height:14px;border:1.5px solid #555;border-radius:2px;margin-top:1px;"></div></td>
+        <td style="padding:7px 6px 7px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.5;color:#111;">${label}</td>
+      </tr>`;
+    });
+  });
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Used Car Buying Checklist</title>
+<style>
+  body { font-family: Georgia, serif; margin: 32px; color: #111; font-size: 13px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  p { font-size: 11px; color: #777; margin: 0 0 18px; }
+  table { width: 100%; border-collapse: collapse; }
+  @page { margin: 1.5cm; }
+</style>
+</head><body>
+<h1>Used Car Buyer's Checklist</h1>
+<p>Used Car Buyer's Toolkit — Print and bring to every vehicle viewing</p>
+<table>${rows}</table>
+<p style="margin-top:22px;border-top:1px solid #ddd;padding-top:8px;color:#aaa;">Complete this checklist for every vehicle before making an offer.</p>
+</body></html>`;
+
+  const a = document.createElement('a');
+  a.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+  a.download = 'used-car-checklist.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// ═══════════════════════════════════════════
+// CLEAR CALCULATOR
+// ═══════════════════════════════════════════
+
+function clearCalc() {
+  document.getElementById('c-price').value = '';
+  document.getElementById('c-offer').value = '';
+  document.getElementById('c-tax').value = '';
+  document.getElementById('c-reg').value = '';
+  document.getElementById('c-doc').value = '';
+  document.getElementById('c-repair').value = '';
+  document.getElementById('c-down').value = '';
+  document.getElementById('c-rate').value = '';
+  document.getElementById('c-term').value = '60';
+  document.getElementById('c-ins').value = '';
+  document.getElementById('c-mpg').value = '';
+  document.getElementById('c-miles').value = '';
+  document.getElementById('calc-output').innerHTML = '<div style="color:#aaa;font-size:13px;padding:12px 0;">Enter values above to see your cost breakdown.</div>';
+}
+
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+
+buildGuide();
+buildChecklist();
+buildModels();
+calcAll();
+</script>
+</body>
+</html>
